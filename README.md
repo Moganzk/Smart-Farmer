@@ -44,58 +44,17 @@ Groq API → Knowledge/advisory responses
 ---
 
 🗂️ Workspace Structure
-
-project-root/
-│
-├── frontend/                   
-│   ├── src/
-│   │   ├── components/         
-│   │   ├── screens/
-│   │   │   ├── farmer/         # Farmer role screens
-│   │   │   │   ├── CameraScreen.js
-│   │   │   │   ├── ResultsScreen.js
-│   │   │   │   ├── HistoryScreen.js
-│   │   │   │   ├── ChatScreen.js        # Farmer chats
-│   │   │   │   └── GroupsScreen.js      # Farmer groups
-│   │   │   └── admin/          # Admin role screens
-│   │   │       ├── DashboardScreen.js   # Analytics view
-│   │   │       ├── ManageUsersScreen.js # User management
-│   │   │       └── ManageContent.js     # Advisory/disease DB
-│   │   ├── services/           
-│   │   ├── db/                 
-│   │   ├── assets/             
-│   │   └── utils/              
-│   ├── package.json
-│   └── README.md
-│
-├── backend/                    
-│   ├── src/
-│   │   ├── routes/
-│   │   │   ├── farmer.js       # Farmer endpoints (detection, history, groups, chat)
-│   │   │   └── admin.js        # Admin endpoints (users, content, analytics)
-│   │   ├── controllers/
-│   │   │   ├── farmerController.js
-│   │   │   └── adminController.js
-│   │   ├── models/             # PostgreSQL schemas (User, Disease, Advisory, Group, Message, Analytics)
-│   │   ├── middleware/         
-│   │   ├── services/           
-│   │   └── utils/              
-│   ├── config/                 
-│   ├── package.json
-│   └── README.md
-│
-├── ai-api-docs/                
-│   ├── gemini.md               
-│   └── groq.md                 
-│
-├── docs/                       
-│   ├── proposal.md             
-│   ├── plan.md                 
-│   ├── flowcharts/             
-│   └── README.md
-│
-└── README.md
-
+backend folder
+    -separated roles
+frontend folder
+    -separated roles
+docs folder
+flowchart images folder
+database folder
+.env file
+README.md file
+Roadmap.md file
+folder structure.md file
 
 ---
 
