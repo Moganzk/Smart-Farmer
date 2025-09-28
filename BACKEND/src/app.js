@@ -10,12 +10,21 @@ const logger = require('./utils/logger');
 const app = express();
 
 // Middleware
-app.use(helmet()); // Security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"]
+    }
+  }
+})); // Security headers with relaxed CSP for the testing tool
 app.use(cors()); // Enable CORS
 app.use(compression()); // Compress responses
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(morgan('combined', { stream: logger.stream })); // HTTP request logging
+app.use(express.static('public')); // Serve static files from public directory
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -33,6 +42,7 @@ const profileRoutes = require('./routes/farmer/profile');
 const settingsRoutes = require('./routes/farmer/settings');
 const notificationRoutes = require('./routes/notifications');
 const ussdRoutes = require('./routes/ussd');
+const ussdTestRoutes = require('./routes/ussdTest');
 const analyticsRoutes = require('./routes/analytics');
 
 app.use('/api/auth', authRoutes);
@@ -45,6 +55,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/ussd', ussdRoutes);
+app.use('/api/ussd-test', ussdTestRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 // Error handling middleware
