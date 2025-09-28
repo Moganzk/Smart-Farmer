@@ -39,7 +39,7 @@ const USSDController = require('../controllers/ussd');
  *       400:
  *         description: Invalid request
  */
-router.post('/session', USSDController.processRequest);
+router.post('/session', USSDController.handleUSSDCallback);
 
 /**
  * @swagger
@@ -95,7 +95,7 @@ router.post('/simulate', async (req, res) => {
                     set: () => {}
                 };
                 
-                USSDController.processRequest(mockReq, mockRes);
+                USSDController.handleUSSDCallback(mockReq, mockRes);
             });
             
             results.push({
