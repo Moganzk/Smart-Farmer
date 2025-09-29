@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "Smart Farmer",
+    "slug": "smart-farmer",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.svg",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/icon.svg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.smartfarmer.app",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Smart Farmer needs access to your camera to capture images of crops for disease detection.",
+        "NSPhotoLibraryUsageDescription": "Smart Farmer needs access to your photo library to upload images for disease detection.",
+        "NSPhotoLibraryAddUsageDescription": "Smart Farmer needs access to your photo library to save detected disease results.",
+        "NSLocationWhenInUseUsageDescription": "Smart Farmer uses your location to provide region-specific crop advice and connect you with nearby farmer groups."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.svg",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.smartfarmer.app",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Smart Farmer needs access to your camera to capture images of crops for disease detection."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Smart Farmer needs access to your photos for crop disease detection."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Smart Farmer needs access to your location to provide region-specific crop advice."
+        }
+      ]
+    ],
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "extra": {
+      "eas": {}
+    }
+  }
+}

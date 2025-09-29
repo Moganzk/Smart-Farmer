@@ -1,0 +1,8 @@
+{
+  "expo": {
+    "extra": {
+      "debugMode": true,
+      "testUrl": "http://192.168.100.22:19000"
+    }
+  }
+}
