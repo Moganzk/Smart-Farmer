@@ -25,21 +25,21 @@ const Card = ({
       case 'flat':
         return {
           backgroundColor: theme.colors.cardBackground,
-          borderRadius: theme.roundness.medium,
+          borderRadius: theme.borderRadius.m,
           elevation: 0,
           shadowOpacity: 0,
         };
       case 'elevated':
         return {
           backgroundColor: theme.colors.cardBackground,
-          borderRadius: theme.roundness.medium,
+          borderRadius: theme.borderRadius.m,
           elevation: 2,
           shadowOpacity: 0.2,
         };
       case 'outlined':
         return {
           backgroundColor: theme.colors.cardBackground,
-          borderRadius: theme.roundness.medium,
+          borderRadius: theme.borderRadius.m,
           borderWidth: 1,
           borderColor: theme.colors.border,
           elevation: 0,
@@ -48,7 +48,7 @@ const Card = ({
       default:
         return {
           backgroundColor: theme.colors.cardBackground,
-          borderRadius: theme.roundness.medium,
+          borderRadius: theme.borderRadius.m,
           elevation: 2,
           shadowOpacity: 0.2,
         };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 /**
  * Button component with different variants
@@ -89,25 +89,25 @@ const Button = ({
         return {
           paddingVertical: 8,
           paddingHorizontal: 16,
-          borderRadius: theme.roundness.small,
+          borderRadius: theme.borderRadius.s,
         };
       case 'medium':
         return {
           paddingVertical: 12,
           paddingHorizontal: 24,
-          borderRadius: theme.roundness.medium,
+          borderRadius: theme.borderRadius.m,
         };
       case 'large':
         return {
           paddingVertical: 16,
           paddingHorizontal: 32,
-          borderRadius: theme.roundness.medium,
+          borderRadius: theme.borderRadius.l,
         };
       default:
         return {
           paddingVertical: 12,
           paddingHorizontal: 24,
-          borderRadius: theme.roundness.medium,
+          borderRadius: theme.borderRadius.m,
         };
     }
   };

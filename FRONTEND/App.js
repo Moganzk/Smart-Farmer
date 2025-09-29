@@ -3,7 +3,6 @@ import { LogBox, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { NavigationContainer } from '@react-navigation/native';
 import FlashMessage from 'react-native-flash-message';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -94,15 +93,13 @@ export default function App() {
                 <SyncProvider>
                   <SafeAreaProvider>
                     <AuthProvider>
-                      <NavigationContainer>
-                        <StatusBar
-                          barStyle="dark-content"
-                          backgroundColor="transparent"
-                          translucent
-                        />
-                        <AppNavigator />
-                        <FlashMessage position="top" />
-                      </NavigationContainer>
+                      <StatusBar
+                        barStyle="dark-content"
+                        backgroundColor="transparent"
+                        translucent
+                      />
+                      <AppNavigator />
+                      <FlashMessage position="top" />
                     </AuthProvider>
                   </SafeAreaProvider>
                 </SyncProvider>

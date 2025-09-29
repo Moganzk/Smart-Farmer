@@ -67,7 +67,7 @@ const OnboardingScreen = ({ navigation }) => {
   const completeOnboarding = async () => {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
-      navigation.replace('Auth');
+      // Navigation will be handled automatically by AppNavigator
     } catch (error) {
       console.error('Error setting onboarding status:', error);
     }

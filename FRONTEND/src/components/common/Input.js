@@ -82,7 +82,7 @@ const Input = ({
               ? theme.colors.primary
               : theme.colors.border,
             backgroundColor: theme.colors.inputBackground,
-            borderRadius: theme.roundness.small,
+            borderRadius: theme.borderRadius.s,
           },
           disabled && { backgroundColor: theme.colors.disabledBg },
         ]}
