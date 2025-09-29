@@ -1,9 +1,9 @@
 // Import environment variables
 import { getEnv } from '../utils/env';
 
-// API Configuration
-export const API_URL = 'https://smart-farmer-api.example.com/api/v1';
-export const SOCKET_URL = 'https://smart-farmer-api.example.com';
+// API Configuration - Use local development server with actual IP
+export const API_URL = getEnv('API_URL', 'http://192.168.100.22:3001/api');
+export const SOCKET_URL = getEnv('SOCKET_URL', 'http://192.168.100.22:3001');
 
 // Gemini API Configuration
 export const GEMINI_API_KEY = getEnv('GEMINI_API_KEY', '');
