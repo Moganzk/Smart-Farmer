@@ -8,11 +8,11 @@
 const express = require('express');
 const router = express.Router();
 const AnalyticsController = require('../controllers/analytics/analyticsController');
-const { verifyToken } = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 const { isAdmin } = require('../middleware/roleCheck');
 
 // Apply authentication and admin role check middleware to all routes
-router.use(verifyToken, isAdmin);
+router.use(auth, isAdmin);
 
 // Dashboard summary
 router.get('/dashboard', AnalyticsController.getDashboardSummary);
