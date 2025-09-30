@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuthentication = async () => {
       try {
         const token = await AsyncStorage.getItem('@auth_token');
+        
         if (token) {
           const decodedToken = jwtDecode(token);
           const currentTime = Date.now() / 1000;
@@ -41,13 +42,18 @@ export const AuthProvider = ({ children }) => {
             setAuthToken(token);
             await loadUser(token, decodedToken);
             return;
+          } else {
+            // Token expired, clear it
+            await AsyncStorage.removeItem('@auth_token');
           }
         }
         // No valid token
         setIsAuthenticated(false);
         setUser(null);
       } catch (error) {
-        console.error('Error checking authentication:', error);
+        console.error('❌ AuthContext: Error checking authentication:', error);
+        // Clear potentially corrupted token
+        await AsyncStorage.removeItem('@auth_token');
         setIsAuthenticated(false);
         setUser(null);
       } finally {
@@ -113,13 +119,13 @@ export const AuthProvider = ({ children }) => {
             );
           }
         } catch (dbError) {
-          console.error('Error saving user to database:', dbError);
+          console.error('❌ AuthContext: Error saving user to database:', dbError);
         }
       }
 
       return userData;
     } catch (error) {
-      console.error('Error loading user:', error);
+      console.error('❌ AuthContext: Error loading user:', error);
       setIsAuthenticated(false);
       setUser(null);
       return null;

@@ -247,24 +247,49 @@ const AppNavigator = () => {
   const { theme } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(null);
+  const [isCheckingOnboarding, setIsCheckingOnboarding] = useState(true);
   
   // Check if user has completed onboarding
   useEffect(() => {
     const checkOnboarding = async () => {
       try {
+        setIsCheckingOnboarding(true);
         const value = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
-        setHasCompletedOnboarding(value === 'true');
+        const completed = value === 'true';
+        console.log('🔍 AppNavigator: Onboarding check result:', completed);
+        setHasCompletedOnboarding(completed);
       } catch (error) {
         console.error('Error checking onboarding status:', error);
         setHasCompletedOnboarding(false);
+      } finally {
+        setIsCheckingOnboarding(false);
       }
     };
     
     checkOnboarding();
-  }, []);
+    
+    // Set up a listener for AsyncStorage changes (for when onboarding is completed)
+    const interval = setInterval(async () => {
+      try {
+        const value = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
+        const completed = value === 'true';
+        if (completed !== hasCompletedOnboarding) {
+          console.log('🔍 AppNavigator: Onboarding status changed to:', completed);
+          setHasCompletedOnboarding(completed);
+        }
+      } catch (error) {
+        console.error('Error checking onboarding status:', error);
+      }
+    }, 1000); // Check every second
+    
+    return () => clearInterval(interval);
+  }, [hasCompletedOnboarding]);
   
   // Show splash screen while loading
-  if (isLoading || hasCompletedOnboarding === null) {
+  console.log('🔍 AppNavigator: isLoading =', isLoading, 'isCheckingOnboarding =', isCheckingOnboarding, 'hasCompletedOnboarding =', hasCompletedOnboarding, 'isAuthenticated =', isAuthenticated);
+  
+  if (isLoading || isCheckingOnboarding || hasCompletedOnboarding === null) {
+    console.log('🔍 AppNavigator: Showing splash screen');
     return <SplashScreen />;
   }
   

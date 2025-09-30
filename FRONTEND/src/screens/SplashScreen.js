@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Image, Animated, Easing } from 'react-native';
+import { StyleSheet, View, Image, Animated, Easing, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../contexts/ThemeContext';
 import { Typography } from '../components/common';
 
@@ -26,8 +27,27 @@ const SplashScreen = () => {
     ]).start();
   }, []);
   
+  // Debug function to clear all app data
+  const clearAllData = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('🔧 All app data cleared');
+    } catch (error) {
+      console.error('Error clearing data:', error);
+    }
+  };
+  
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <TouchableOpacity 
+        style={styles.debugButton}
+        onPress={clearAllData}
+      >
+        <Typography variant="caption" color={theme.colors.textMuted}>
+          Clear Data
+        </Typography>
+      </TouchableOpacity>
+      
       <Animated.View 
         style={[
           styles.content,
@@ -67,6 +87,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  debugButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    padding: 10,
+    zIndex: 1,
   },
   content: {
     alignItems: 'center',

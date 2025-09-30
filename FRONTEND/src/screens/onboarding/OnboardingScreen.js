@@ -50,26 +50,32 @@ const OnboardingScreen = ({ navigation }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   
   const handleNext = () => {
+    console.log('🔍 OnboardingScreen: handleNext called, currentIndex:', currentIndex);
     if (currentIndex < onboardingData.length - 1) {
+      console.log('🔍 OnboardingScreen: Moving to next slide');
       flatListRef.current?.scrollToIndex({
         index: currentIndex + 1,
         animated: true,
       });
     } else {
+      console.log('🔍 OnboardingScreen: Completing onboarding');
       completeOnboarding();
     }
   };
   
   const handleSkip = () => {
+    console.log('🔍 OnboardingScreen: handleSkip called');
     completeOnboarding();
   };
   
   const completeOnboarding = async () => {
+    console.log('🔍 OnboardingScreen: completeOnboarding called');
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
+      console.log('🔍 OnboardingScreen: Onboarding completion saved to AsyncStorage');
       // Navigation will be handled automatically by AppNavigator
     } catch (error) {
-      console.error('Error setting onboarding status:', error);
+      console.error('❌ OnboardingScreen: Error setting onboarding status:', error);
     }
   };
   
