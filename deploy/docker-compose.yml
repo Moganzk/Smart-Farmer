@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ../BACKEND
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ../BACKEND/.env
+    ports:
+      - "3001:3001"
+    depends_on: []
+
+  nginx:
+    image: nginx:stable
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certs:/etc/letsencrypt
+    depends_on:
+      - app
