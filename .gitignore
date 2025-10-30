@@ -26,6 +26,67 @@ yarn-error.log
 /build
 /dist
 
+# Expo / React Native
+.expo/
+.expo-shared/
+.expo/cache/
+.android/
+.ios/
+*.keystore
+*.apk
+*.aab
+
+# Xcode
+*.xcworkspace
+*.xcuserstate
+DerivedData/
+
+# Visual Studio Code
+.vscode/
+.vscode/*
+.history/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment variables and secrets
+.env
+.env.*
+secrets.json
+config/*.secret.js
+config/*.key
+**/credentials.json
+**/google-services.json
+**/GoogleService-Info.plist
+
+# SSH keys
+id_rsa
+id_rsa.pub
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Coverage and reports
+coverage/
+coverage-final.json
+
+# Image assets that are large or generated
+**/assets/images/generated/
+
+# Ignore exported docs and local test artifacts
+docs/exported/
+
+# OneDrive/Office temp
+~$*
+
+# JetBrains IDEs
+.idea/
+
+
 # Logs
 logs
 *.log
