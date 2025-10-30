@@ -5,26 +5,12 @@ const responses = require('../../utils/responses');
 
 /**
  * Create notification tables if they don't exist
+ * NOTE: Table already exists in schema.sql, so this is disabled to prevent startup errors
  */
 const initializeNotificationSystem = async () => {
   try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS notifications (
-        notification_id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL REFERENCES users(user_id),
-        notification_type VARCHAR(50) NOT NULL,
-        title VARCHAR(100) NOT NULL,
-        message TEXT NOT NULL,
-        related_entity_type VARCHAR(50),
-        related_entity_id INTEGER,
-        is_read BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        read_at TIMESTAMP
-      );
-      
-      CREATE INDEX IF NOT EXISTS idx_notifications_user_read ON notifications(user_id, is_read);
-    `);
-    logger.info('Notification system initialized successfully');
+    // Table already created in schema.sql - skip initialization
+    logger.info('Notification system initialized successfully (table exists in schema)');
   } catch (error) {
     logger.error('Error initializing notification system:', error);
   }

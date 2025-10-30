@@ -56,26 +56,39 @@ const validateLogin = [
     .withMessage('Password is required')
 ];
 
-const validate = (validations) => {
-  return async (req, res, next) => {
-    await Promise.all(validations.map(validation => validation.run(req)));
-
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-      return next();
-    }
-
+// Middleware to check validation results
+const checkValidation = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     return res.status(400).json({
       error: {
         message: 'Validation failed',
         details: errors.array()
       }
     });
-  };
+  }
+  next();
+};
+
+// Flexible validate function that works both ways:
+// 1. As middleware: validate(req, res, next) - for backward compatibility
+// 2. As function: validate([...rules]) - returns middleware array
+const validate = (arg1, arg2, arg3) => {
+  // If called with (req, res, next) - act as middleware
+  if (arg2 && arg3 && typeof arg3 === 'function') {
+    return checkValidation(arg1, arg2, arg3);
+  }
+  // If called with array of validations - return middleware array
+  if (Array.isArray(arg1)) {
+    return [...arg1, checkValidation];
+  }
+  // Default to checkValidation middleware
+  return checkValidation(arg1, arg2, arg3);
 };
 
 module.exports = {
   validateRegistration,
   validateLogin,
-  validate
+  validate,
+  checkValidation
 };

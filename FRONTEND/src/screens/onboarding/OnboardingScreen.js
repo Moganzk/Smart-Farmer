@@ -53,10 +53,13 @@ const OnboardingScreen = ({ navigation }) => {
     console.log('🔍 OnboardingScreen: handleNext called, currentIndex:', currentIndex);
     if (currentIndex < onboardingData.length - 1) {
       console.log('🔍 OnboardingScreen: Moving to next slide');
+      const nextIndex = currentIndex + 1;
       flatListRef.current?.scrollToIndex({
-        index: currentIndex + 1,
+        index: nextIndex,
         animated: true,
       });
+      // Update currentIndex immediately to prevent multiple rapid clicks
+      setCurrentIndex(nextIndex);
     } else {
       console.log('🔍 OnboardingScreen: Completing onboarding');
       completeOnboarding();

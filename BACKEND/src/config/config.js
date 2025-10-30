@@ -23,7 +23,7 @@ module.exports = {
   auth: {
     jwtSecret: process.env.JWT_SECRET || 'your-secret-key',
     jwtExpiresIn: '24h',
-    saltRounds: 10
+    saltRounds: 8 // Reduced from 10 for faster registration (still very secure)
   },
 
   // File Upload

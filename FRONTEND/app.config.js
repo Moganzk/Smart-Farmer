@@ -91,8 +91,8 @@ export default {
       GEMINI_API_KEY: envVars.GEMINI_API_KEY || process.env.GEMINI_API_KEY,
       GROQ_API_KEY: envVars.GROQ_API_KEY || process.env.GROQ_API_KEY,
       AFRICA_TALKING_KEY: envVars.AFRICA_TALKING_KEY || process.env.AFRICA_TALKING_KEY,
-      API_URL: envVars.API_URL || process.env.API_URL || 'http://192.168.100.22:3001/api',
-      SOCKET_URL: envVars.SOCKET_URL || process.env.SOCKET_URL || 'http://192.168.100.22:3001',
+      API_URL: envVars.API_URL || process.env.API_URL || 'http://localhost:3001/api',
+      SOCKET_URL: envVars.SOCKET_URL || process.env.SOCKET_URL || 'http://localhost:3001',
       eas: {
         projectId: "your-project-id"
       }

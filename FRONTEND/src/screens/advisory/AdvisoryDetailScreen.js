@@ -32,18 +32,30 @@ const AdvisoryDetailScreen = () => {
   useEffect(() => {
     const fetchArticleContent = async () => {
       try {
+        // Check if article exists
+        if (!article) {
+          console.error('No article provided');
+          setIsLoading(false);
+          showMessage({
+            message: 'Article not found',
+            description: 'The requested article could not be loaded.',
+            type: 'danger',
+          });
+          return;
+        }
+
         // In a real app, you would fetch this from an API
         // Simulate loading delay
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Mock article content
+        // Mock article content with safe defaults
         const content = {
-          title: article.title,
-          image: article.image,
+          title: article.title || 'Untitled Article',
+          image: article.image || 'https://via.placeholder.com/400x250?text=No+Image',
           author: article.author || 'Smart Farmer Team',
-          date: article.date || '1 week ago',
+          date: article.date || 'Recently',
           readTime: article.readTime || '5 min read',
-          category: article.category,
+          category: article.category || 'General',
           content: [
             {
               type: 'paragraph',
@@ -146,6 +158,34 @@ const AdvisoryDetailScreen = () => {
     fetchArticleContent();
   }, [article]);
   
+  // Guard clause - if no article, show error
+  if (!article) {
+    return (
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.loadingContainer}>
+          <Ionicons name="alert-circle-outline" size={48} color={theme.colors.textSecondary} />
+          <Text style={[styles.errorText, { color: theme.colors.textSecondary }]}>
+            Article not found
+          </Text>
+          <TouchableOpacity
+            style={[styles.backToHomeButton, { backgroundColor: theme.colors.primary }]}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backToHomeText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+  
   // Handle bookmarking
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
@@ -160,8 +200,8 @@ const AdvisoryDetailScreen = () => {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Check out this article: ${article.title} - Read it on Smart Farmer App`,
-        url: 'https://smartfarmer.app/articles/' + article.id,
+        message: `Check out this article: ${article?.title || 'Smart Farmer Article'} - Read it on Smart Farmer App`,
+        url: 'https://smartfarmer.app/articles/' + (article?.id || ''),
       });
     } catch (error) {
       console.error('Error sharing article:', error);
@@ -305,25 +345,25 @@ const AdvisoryDetailScreen = () => {
           {/* Hero Section */}
           <View style={styles.heroSection}>
             <Image 
-              source={{ uri: articleContent.image }} 
+              source={{ uri: articleContent?.image || 'https://via.placeholder.com/400x250?text=No+Image' }} 
               style={styles.heroImage}
               defaultSource={require('../../assets/placeholder-image.png')}
             />
             <View style={styles.categoryBadge}>
-              <Text style={styles.categoryText}>{articleContent.category}</Text>
+              <Text style={styles.categoryText}>{articleContent?.category || 'General'}</Text>
             </View>
           </View>
           
           {/* Article Content */}
           <View style={styles.contentContainer}>
             <Text style={[styles.title, { color: theme.colors.text }]}>
-              {articleContent.title}
+              {articleContent?.title || 'Untitled'}
             </Text>
             
             <View style={styles.authorContainer}>
               <Ionicons name="person-circle-outline" size={24} color={theme.colors.textSecondary} />
               <Text style={[styles.authorText, { color: theme.colors.textSecondary }]}>
-                {articleContent.author}
+                {articleContent?.author || 'Unknown Author'}
               </Text>
             </View>
             
@@ -331,13 +371,13 @@ const AdvisoryDetailScreen = () => {
               <View style={styles.metaItem}>
                 <Ionicons name="time-outline" size={16} color={theme.colors.textSecondary} />
                 <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>
-                  {articleContent.readTime}
+                  {articleContent?.readTime || '5 min'}
                 </Text>
               </View>
               <View style={styles.metaItem}>
                 <Ionicons name="calendar-outline" size={16} color={theme.colors.textSecondary} />
                 <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>
-                  {articleContent.date}
+                  {articleContent?.date || 'Recently'}
                 </Text>
               </View>
             </View>
@@ -346,7 +386,7 @@ const AdvisoryDetailScreen = () => {
             
             {/* Article Body */}
             <View style={styles.articleBody}>
-              {articleContent.content.map(renderContentItem)}
+              {articleContent?.content?.map(renderContentItem) || <Text>No content available</Text>}
             </View>
             
             {/* Social Sharing */}
@@ -399,7 +439,7 @@ const AdvisoryDetailScreen = () => {
               <Text style={[styles.relatedTitle, { color: theme.colors.text }]}>
                 Related Articles
               </Text>
-              {articleContent.relatedArticles.map((relatedArticle, index) => (
+              {articleContent?.relatedArticles?.map((relatedArticle, index) => (
                 <TouchableOpacity 
                   key={relatedArticle.id}
                   style={[
@@ -416,7 +456,7 @@ const AdvisoryDetailScreen = () => {
                     {relatedArticle.category}
                   </Text>
                 </TouchableOpacity>
-              ))}
+              )) || <Text style={{ color: theme.colors.textSecondary }}>No related articles</Text>}
             </View>
             
             {/* Learn More Button */}
@@ -458,6 +498,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 16,
+    marginTop: 15,
+    marginBottom: 20,
+  },
+  backToHomeButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  backToHomeText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
   scrollView: {
     flex: 1,

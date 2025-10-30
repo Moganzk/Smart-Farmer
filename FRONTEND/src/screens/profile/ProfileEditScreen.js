@@ -28,10 +28,11 @@ const ProfileEditSchema = Yup.object().shape({
     .required('Full name is required'),
   phone: Yup.string()
     .matches(/^\+?[0-9]{10,14}$/, 'Invalid phone number')
-    .required('Phone number is required'),
-  location: Yup.string().required('Location is required'),
-  farmSize: Yup.string().required('Farm size is required'),
-  preferredCrops: Yup.string().required('Preferred crops are required'),
+    .nullable()
+    .notRequired(),
+  location: Yup.string().nullable().notRequired(),
+  farmSize: Yup.string().nullable().notRequired(),
+  preferredCrops: Yup.string().nullable().notRequired(),
 });
 
 const ProfileEditScreen = ({ navigation }) => {
@@ -40,16 +41,16 @@ const ProfileEditScreen = ({ navigation }) => {
   const [profileImage, setProfileImage] = useState(user?.profileImage || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Mock user data if needed
-  const userData = user || {
-    fullName: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1234567890',
-    profileImage: null,
-    location: 'Nairobi, Kenya',
-    joinedDate: '2023-06-15',
-    farmSize: '5 acres',
-    preferredCrops: 'Maize, Beans, Tomatoes',
+  // Mock user data if needed - handle both 'name' and 'fullName' fields
+  const userData = {
+    fullName: user?.name || user?.fullName || 'John Doe',
+    email: user?.email || 'user@example.com',
+    phone: user?.phone || '',
+    profileImage: user?.profileImage || user?.profile_image || null,
+    location: user?.location || '',
+    joinedDate: user?.joinedDate || user?.created_at || new Date().toISOString(),
+    farmSize: user?.farmSize || user?.farm_size || '',
+    preferredCrops: user?.preferredCrops || user?.preferred_crops || '',
   };
 
   const handlePickImage = async () => {
@@ -88,10 +89,12 @@ const ProfileEditScreen = ({ navigation }) => {
     setIsSubmitting(true);
     try {
       // Split the comma-separated crops string into an array
-      const preferredCropsArray = values.preferredCrops
-        .split(',')
-        .map(crop => crop.trim())
-        .filter(crop => crop);
+      const preferredCropsArray = values.preferredCrops && values.preferredCrops.trim()
+        ? values.preferredCrops
+            .split(',')
+            .map(crop => crop.trim())
+            .filter(crop => crop)
+        : [];
 
       // Prepare updated user data
       const updatedUserData = {
@@ -110,6 +113,7 @@ const ProfileEditScreen = ({ navigation }) => {
       });
       navigation.goBack();
     } catch (error) {
+      console.error('Profile update error:', error);
       showMessage({
         message: 'Update Failed',
         description: error.message || 'Something went wrong. Please try again.',
@@ -159,10 +163,13 @@ const ProfileEditScreen = ({ navigation }) => {
                     { color: theme.colors.primary },
                   ]}
                 >
-                  {userData.fullName
-                    .split(' ')
-                    .map((name) => name[0])
-                    .join('')}
+                  {userData.fullName && userData.fullName.trim()
+                    ? userData.fullName
+                        .split(' ')
+                        .map((name) => name[0])
+                        .join('')
+                        .toUpperCase()
+                    : 'U'}
                 </Text>
               </View>
             )}
@@ -182,13 +189,13 @@ const ProfileEditScreen = ({ navigation }) => {
 
         <Formik
           initialValues={{
-            fullName: userData.fullName,
-            phone: userData.phone,
-            location: userData.location,
-            farmSize: userData.farmSize,
+            fullName: userData.fullName || '',
+            phone: userData.phone || '',
+            location: userData.location || '',
+            farmSize: userData.farmSize || '',
             preferredCrops: Array.isArray(userData.preferredCrops) 
               ? userData.preferredCrops.join(', ')
-              : userData.preferredCrops,
+              : (userData.preferredCrops || ''),
           }}
           validationSchema={ProfileEditSchema}
           onSubmit={handleUpdateProfile}

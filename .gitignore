@@ -1,4 +1,10 @@
-# Environment variables
+# Local env files
+BACKEND/.env
+
+# Node modules and common
+node_modules/
+npm-debug.log
+.env# Environment variables
 .env
 .env.test
 .env.local

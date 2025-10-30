@@ -82,7 +82,7 @@ const Avatar = ({
     }
     
     return (
-      <Text style={[styles.label, getTextSize(), { color: theme.colors.onPrimary }]}>
+      <Text style={[styles.label, getTextSize(), { color: '#FFFFFF' }]}>
         {label ? label.substring(0, 2).toUpperCase() : '?'}
       </Text>
     );

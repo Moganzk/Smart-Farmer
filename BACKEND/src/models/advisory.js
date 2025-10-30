@@ -9,6 +9,7 @@ class Advisory {
     cropType,
     diseaseName,
     severityLevel,
+    imageUrl,
     createdBy
   }) {
     try {
@@ -20,10 +21,11 @@ class Advisory {
           crop_type,
           disease_name,
           severity_level,
+          image_url,
           created_by
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *`,
-        [title, contentType, content, cropType, diseaseName, severityLevel, createdBy]
+        [title, contentType, content, cropType, diseaseName, severityLevel, imageUrl, createdBy]
       );
 
       return result.rows[0];
@@ -40,6 +42,7 @@ class Advisory {
     cropType,
     diseaseName,
     severityLevel,
+    imageUrl,
     isActive
   }) {
     try {
@@ -63,12 +66,13 @@ class Advisory {
              crop_type = COALESCE($4, crop_type),
              disease_name = COALESCE($5, disease_name),
              severity_level = COALESCE($6, severity_level),
-             is_active = COALESCE($7, is_active),
-             version = $8,
+             image_url = COALESCE($7, image_url),
+             is_active = COALESCE($8, is_active),
+             version = $9,
              updated_at = CURRENT_TIMESTAMP
-         WHERE content_id = $9
+         WHERE content_id = $10
          RETURNING *`,
-        [title, contentType, content, cropType, diseaseName, severityLevel, isActive, newVersion, contentId]
+        [title, contentType, content, cropType, diseaseName, severityLevel, imageUrl, isActive, newVersion, contentId]
       );
 
       return result.rows[0];
@@ -191,6 +195,58 @@ class Advisory {
       logger.error('Error getting advisory stats:', error);
       throw error;
     }
+  }
+
+  static async getFeatured(limit = 5) {
+    try {
+      const result = await db.query(
+        `SELECT 
+           ac.content_id as id,
+           ac.title,
+           ac.content_type as category,
+           ac.content as excerpt,
+           ac.image_url,
+           ac.crop_type,
+           ac.disease_name,
+           ac.severity_level,
+           ac.created_at as date,
+           ac.updated_at,
+           u.full_name as author,
+           u.username as author_username
+         FROM advisory_content ac
+         JOIN users u ON ac.created_by = u.user_id
+         WHERE ac.is_active = true
+         ORDER BY ac.updated_at DESC, ac.created_at DESC
+         LIMIT $1`,
+        [limit]
+      );
+      
+      // Format the response to match frontend expectations
+      return result.rows.map(row => ({
+        id: row.id,
+        title: row.title,
+        category: row.category || 'Advisory',
+        image: row.image_url || 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&q=80',
+        excerpt: row.excerpt ? row.excerpt.substring(0, 150) + '...' : 'No description available',
+        author: row.author,
+        date: row.date,
+        readTime: this.calculateReadTime(row.excerpt),
+        cropType: row.crop_type,
+        diseaseName: row.disease_name,
+        severityLevel: row.severity_level
+      }));
+    } catch (error) {
+      logger.error('Error getting featured content:', error);
+      throw error;
+    }
+  }
+
+  static calculateReadTime(content) {
+    if (!content) return '2 min read';
+    const wordsPerMinute = 200;
+    const wordCount = content.split(/\s+/).length;
+    const minutes = Math.ceil(wordCount / wordsPerMinute);
+    return `${minutes} min read`;
   }
 }
 

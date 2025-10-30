@@ -2,7 +2,7 @@
 const { pool } = require('../../config/database');
 const logger = require('../../utils/logger');
 const responses = require('../../utils/responses');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 
 /**
  * Get all groups the user is a member of
@@ -41,7 +41,7 @@ const createGroup = async (req, res) => {
   
   try {
     // Generate a random invite code
-    const inviteCode = uuidv4().substring(0, 8);
+  const inviteCode = randomUUID().substring(0, 8);
     
     // Start a transaction
     const client = await pool.connect();

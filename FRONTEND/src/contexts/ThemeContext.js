@@ -39,6 +39,20 @@ const lightTheme = {
     highlight: '#E8F5E9',
     shadow: 'rgba(0, 0, 0, 0.1)',
     overlay: 'rgba(0, 0, 0, 0.5)',
+    
+    // Tab icons
+    tabIconInactive: '#757575',
+  },
+  navigation: {
+    dark: false,
+    colors: {
+      primary: '#2E7D32',
+      background: '#FFFFFF',
+      card: '#FFFFFF',
+      text: '#212121',
+      border: '#E0E0E0',
+      notification: '#F44336',
+    },
   },
   spacing: {
     xs: 4,
@@ -135,6 +149,20 @@ const darkTheme = {
     highlight: '#1B5E20',
     shadow: 'rgba(0, 0, 0, 0.3)',
     overlay: 'rgba(0, 0, 0, 0.7)',
+    
+    // Tab icons
+    tabIconInactive: '#999999',
+  },
+  navigation: {
+    dark: true,
+    colors: {
+      primary: '#4CAF50',
+      background: '#121212',
+      card: '#2C2C2C',
+      text: '#FFFFFF',
+      border: '#444444',
+      notification: '#EF5350',
+    },
   },
   // The rest remains the same
   spacing: lightTheme.spacing,

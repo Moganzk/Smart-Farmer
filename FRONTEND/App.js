@@ -3,6 +3,7 @@ import { LogBox, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { NavigationContainer } from '@react-navigation/native';
 import FlashMessage from 'react-native-flash-message';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -21,7 +22,7 @@ import {
 
 import { store, persistor } from './src/redux/store';
 import AppNavigator from './src/navigation/AppNavigator';
-import { ThemeProvider } from './src/contexts/ThemeContext';
+import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { DatabaseProvider } from './src/contexts/DatabaseContext';
 import { NetworkProvider } from './src/contexts/NetworkContext';
 import { LocalizationProvider } from './src/contexts/LocalizationContext';
@@ -38,6 +39,18 @@ LogBox.ignoreLogs([
 
 // Keep splash screen visible while loading
 SplashScreen.preventAutoHideAsync();
+
+// Navigation wrapper that has access to theme
+const NavigationWrapper = () => {
+  const { theme } = useTheme();
+  
+  return (
+    <NavigationContainer theme={theme.navigation}>
+      <AppNavigator />
+      <FlashMessage position="top" />
+    </NavigationContainer>
+  );
+};
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -93,13 +106,7 @@ export default function App() {
                 <SyncProvider>
                   <SafeAreaProvider>
                     <AuthProvider>
-                      <StatusBar
-                        barStyle="dark-content"
-                        backgroundColor="transparent"
-                        translucent
-                      />
-                      <AppNavigator />
-                      <FlashMessage position="top" />
+                      <NavigationWrapper />
                     </AuthProvider>
                   </SafeAreaProvider>
                 </SyncProvider>

@@ -207,6 +207,25 @@ const advisoryController = {
         }
       });
     }
+  },
+
+  getFeatured: async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit) || 5;
+      const featuredContent = await Advisory.getFeatured(limit);
+
+      res.json({
+        success: true,
+        data: featuredContent
+      });
+    } catch (error) {
+      logger.error('Error getting featured content:', error);
+      res.status(500).json({
+        error: {
+          message: 'Error retrieving featured content'
+        }
+      });
+    }
   }
 }
 

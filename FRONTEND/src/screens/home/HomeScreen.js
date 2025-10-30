@@ -59,7 +59,8 @@ const HomeScreen = () => {
     try {
       if (isConnected) {
         const response = await apiService.advisory.getFeatured();
-        setFeaturedContent(response.data.slice(0, 5));
+        const data = response.data?.data || response.data || [];
+        setFeaturedContent(Array.isArray(data) ? data.slice(0, 5) : []);
       } else {
         // Load from local storage/database if offline
         setFeaturedContent([
@@ -81,7 +82,7 @@ const HomeScreen = () => {
       }
     } catch (error) {
       console.error('Error loading featured content:', error);
-      // Fallback data
+      // Fallback data on network error
       setFeaturedContent([]);
     }
   };
@@ -90,7 +91,8 @@ const HomeScreen = () => {
     try {
       if (isConnected) {
         const response = await apiService.diseases.getHistory({ limit: 3 });
-        setRecentDetections(response.data);
+        const data = response.data?.data || response.data || [];
+        setRecentDetections(Array.isArray(data) ? data : []);
       } else {
         // Load from local database if offline
         setRecentDetections([]);

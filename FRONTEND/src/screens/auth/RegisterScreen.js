@@ -18,6 +18,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import CustomTextInput from '../../components/common/CustomTextInput';
 import CustomButton from '../../components/common/CustomButton';
 import PasswordStrengthIndicator from '../../components/auth/PasswordStrengthIndicator';
+import PasswordRequirements from '../../components/auth/PasswordRequirements';
 import { showMessage } from 'react-native-flash-message';
 
 // Validation schema
@@ -34,9 +35,9 @@ const RegisterSchema = Yup.object().shape({
     .required('Phone number is required'),
   password: Yup.string()
     .min(8, 'Password must be at least 8 characters')
-    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .matches(/[A-Za-z]/, 'Password must contain at least one letter')
     .matches(/[0-9]/, 'Password must contain at least one number')
+    .matches(/[@$!%*#?&]/, 'Password must contain at least one special character (@$!%*#?&)')
     .required('Password is required'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
@@ -53,13 +54,55 @@ const RegisterScreen = ({ navigation }) => {
   const handleRegister = async (values) => {
     setIsSubmitting(true);
     try {
-      await register(values.fullName, values.email, values.phone, values.password);
-      showMessage({
-        message: 'Registration Successful',
-        description: 'Your account has been created. Please verify your email/phone.',
-        type: 'success',
-      });
-      navigation.navigate('VerifyPhone', { phone: values.phone });
+      // Generate unique username from email
+      const emailPrefix = values.email.split('@')[0];
+      const timestamp = Date.now().toString().slice(-4); // Last 4 digits of timestamp
+      const username = `${emailPrefix}${timestamp}`; // e.g., john1234
+      
+      // Format phone number to international format (Kenyan +254)
+      const formatPhoneNumber = (phone) => {
+        if (!phone) return '';
+        // Remove all spaces, dashes, and parentheses
+        let cleaned = phone.replace(/[\s\-\(\)]/g, '');
+        // If starts with 0, replace with +254
+        if (cleaned.startsWith('0')) {
+          cleaned = '+254' + cleaned.substring(1);
+        }
+        // If doesn't start with +, add +254
+        else if (!cleaned.startsWith('+')) {
+          cleaned = '+254' + cleaned;
+        }
+        return cleaned;
+      };
+      
+      // Format the data for the backend API
+      const userData = {
+        username: username,
+        email: values.email,
+        password: values.password,
+        role: 'farmer',
+        fullName: values.fullName,
+        phoneNumber: formatPhoneNumber(values.phone),
+        location: '', // Can be added later in profile
+        preferredLanguage: 'en'
+      };
+
+      const result = await register(userData);
+      
+      if (result.success) {
+        showMessage({
+          message: 'Registration Successful',
+          description: 'Welcome to Smart Farmer!',
+          type: 'success',
+        });
+        // Navigation will be handled by AppNavigator based on auth state
+      } else {
+        showMessage({
+          message: 'Registration Failed',
+          description: result.error || 'Something went wrong. Please try again.',
+          type: 'danger',
+        });
+      }
     } catch (error) {
       showMessage({
         message: 'Registration Failed',
@@ -177,6 +220,10 @@ const RegisterScreen = ({ navigation }) => {
 
               {values.password ? (
                 <PasswordStrengthIndicator password={values.password} />
+              ) : null}
+
+              {values.password ? (
+                <PasswordRequirements password={values.password} />
               ) : null}
 
               <CustomTextInput

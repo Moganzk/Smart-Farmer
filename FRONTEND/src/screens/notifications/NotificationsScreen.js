@@ -118,19 +118,49 @@ const NotificationsScreen = () => {
     // Navigate to the appropriate screen based on notification type
     switch (notification.type) {
       case 'disease_detection':
-        navigation.navigate('DiseaseResult', { detectionId: notification.referenceId });
+        navigation.navigate('MainTabs', { 
+          screen: 'DiseaseTab',
+          params: {
+            screen: 'DiseaseResult',
+            params: { detectionId: notification.referenceId }
+          }
+        });
         break;
       case 'group_invitation':
-        navigation.navigate('GroupDetail', { groupId: notification.referenceId });
+        navigation.navigate('MainTabs', { 
+          screen: 'GroupsTab',
+          params: {
+            screen: 'GroupDetail',
+            params: { groupId: notification.referenceId }
+          }
+        });
         break;
       case 'advisory':
-        navigation.navigate('AdvisoryDetail', { advisoryId: notification.referenceId });
+        navigation.navigate('MainTabs', { 
+          screen: 'AdvisoryTab',
+          params: {
+            screen: 'AdvisoryDetail',
+            params: { advisoryId: notification.referenceId }
+          }
+        });
         break;
       case 'message':
-        navigation.navigate('GroupChat', { groupId: notification.referenceId });
+        navigation.navigate('MainTabs', { 
+          screen: 'GroupsTab',
+          params: {
+            screen: 'GroupChat',
+            params: { groupId: notification.referenceId }
+          }
+        });
         break;
       case 'weather_alert':
-        navigation.navigate('Weather');
+        // Weather screen not implemented yet - show info message
+        showMessage({
+          message: 'Weather Alerts',
+          description: 'Weather alerts feature coming soon!',
+          type: 'info',
+          duration: 3000,
+        });
         break;
       default:
         // Default action for other notification types

@@ -6,7 +6,7 @@ const responses = require('../../utils/responses');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 
 // Configure multer for profile image uploads
 const storage = multer.diskStorage({
@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const userId = req.user.user_id;
     const fileExt = path.extname(file.originalname);
-    const fileName = `user_${userId}_${uuidv4()}${fileExt}`;
+  const fileName = `user_${userId}_${randomUUID()}${fileExt}`;
     cb(null, fileName);
   }
 });

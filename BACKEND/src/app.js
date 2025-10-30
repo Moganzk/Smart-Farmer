@@ -26,6 +26,12 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(morgan('combined', { stream: logger.stream })); // HTTP request logging
 app.use(express.static('public')); // Serve static files from public directory
 
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`🔍 Request: ${req.method} ${req.path} - Body:`, req.body);
+  next();
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date() });
@@ -35,6 +41,7 @@ app.get('/health', (req, res) => {
 const authRoutes = require('./routes/auth');
 const groupRoutes = require('./routes/groups');
 const diseaseRoutes = require('./routes/diseases');
+const diseaseImagesRoutes = require('./routes/diseaseImages');
 const advisoryRoutes = require('./routes/advisory');
 const adminRoutes = require('./routes/admin');
 const reportRoutes = require('./routes/report');
@@ -48,6 +55,7 @@ const analyticsRoutes = require('./routes/analytics');
 app.use('/api/auth', authRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/diseases', diseaseRoutes);
+app.use('/api/disease-images', diseaseImagesRoutes);
 app.use('/api/advisory', advisoryRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
@@ -75,7 +83,18 @@ module.exports = app;
 // Start server if not in test environment
 if (process.env.NODE_ENV !== 'test') {
   const port = 3001; // Force port to 3001 for testing
-  app.listen(port, () => {
-    logger.info(`Server running on port ${port}`);
+  const host = '0.0.0.0'; // Bind to all interfaces
+  
+  const server = app.listen(port, host, () => {
+    logger.info(`Server running on http://${host}:${port}`);
+    console.log(`🚀 Server is accessible at:`);
+    console.log(`   - http://localhost:${port}`);
+    console.log(`   - http://127.0.0.1:${port}`);
+    console.log(`   - http://192.168.100.22:${port}`);
+  });
+  
+  server.on('error', (error) => {
+    logger.error('Server error:', error);
+    console.error('❌ Server failed to start:', error.message);
   });
 }

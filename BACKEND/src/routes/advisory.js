@@ -14,6 +14,8 @@ const asyncHandler = fn => async (req, res, next) => {
 const controller = require('../controllers/advisory/advisory.controller');
 
 // Advisory content endpoints
+router.get('/featured', auth, asyncHandler(controller.getFeatured));
+
 router.get('/search', auth, asyncHandler(controller.search));
 
 router.get('/crops', auth, asyncHandler(controller.getCropTypes));

@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
 } from 'react-native';
 import {
@@ -12,8 +11,8 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../contexts/ThemeContext';
-import { Typography, Avatar } from '../components/common';
+import { useTheme } from '../../contexts/ThemeContext';
+import { Typography, Avatar } from '../common';
 
 const DrawerContent = (props) => {
   const { theme } = useTheme();
@@ -28,11 +27,6 @@ const DrawerContent = (props) => {
         {/* Header/Profile Section */}
         <View style={styles.headerContainer}>
           <View style={[styles.headerBackground, { backgroundColor: theme.colors.primary }]}>
-            <Image
-              source={require('../assets/images/drawer-header-bg.jpg')}
-              style={styles.headerBackgroundImage}
-              blurRadius={1}
-            />
             <View style={styles.headerContent}>
               <Avatar 
                 source={user?.profile_pic} 
@@ -42,14 +36,14 @@ const DrawerContent = (props) => {
               <View style={styles.headerTextContainer}>
                 <Typography 
                   variant="subtitle1"
-                  color={theme.colors.onPrimary}
+                  color="#FFFFFF"
                   style={styles.userName}
                 >
                   {user?.name || 'Guest User'}
                 </Typography>
                 <Typography 
                   variant="body2"
-                  color={theme.colors.onPrimary}
+                  color="#FFFFFF"
                   style={styles.userEmail}
                 >
                   {user?.email || 'Sign in to access all features'}

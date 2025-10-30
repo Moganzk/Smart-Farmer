@@ -36,6 +36,7 @@ CREATE TABLE advisory_content (
     crop_type VARCHAR(100),
     disease_name VARCHAR(100),
     severity_level VARCHAR(20),
+    image_url VARCHAR(500), -- URL or path to advisory content cover image
     created_by INT REFERENCES users(user_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

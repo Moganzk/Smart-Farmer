@@ -13,10 +13,19 @@ import { useTheme } from '../../contexts/ThemeContext';
 
 const ProfileScreen = ({ navigation }) => {
   const { theme } = useTheme();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
-  // Mock user data if needed
-  const userData = user || {
+  // Map user data from AuthContext or use mock data
+  const userData = user ? {
+    fullName: user.name || 'User',
+    email: user.email || 'N/A',
+    phone: user.phone || 'N/A',
+    profileImage: user.profileImage || null,
+    location: user.location || 'Not set',
+    joinedDate: user.createdAt || new Date().toISOString(),
+    farmSize: user.farmSize || 'Not set',
+    preferredCrops: user.preferredCrops || [],
+  } : {
     fullName: 'John Doe',
     email: 'john.doe@example.com',
     phone: '+1234567890',
@@ -70,10 +79,9 @@ const ProfileScreen = ({ navigation }) => {
                   { color: theme.colors.primary },
                 ]}
               >
-                {userData.fullName
-                  .split(' ')
+                {userData.fullName && userData.fullName.split(' ')
                   .map((name) => name[0])
-                  .join('')}
+                  .join('') || '?'}
               </Text>
             </View>
           )}
@@ -140,7 +148,7 @@ const ProfileScreen = ({ navigation }) => {
               Joined
             </Text>
             <Text style={[styles.infoValue, { color: theme.colors.text }]}>
-              {new Date(userData.joinedDate).toLocaleDateString()}
+              {userData.joinedDate ? new Date(userData.joinedDate).toLocaleDateString() : 'N/A'}
             </Text>
           </View>
         </View>
@@ -185,7 +193,9 @@ const ProfileScreen = ({ navigation }) => {
               Preferred Crops
             </Text>
             <Text style={[styles.infoValue, { color: theme.colors.text }]}>
-              {userData.preferredCrops.join(', ')}
+              {userData.preferredCrops && userData.preferredCrops.length > 0 
+                ? userData.preferredCrops.join(', ') 
+                : 'None set'}
             </Text>
           </View>
         </View>
@@ -196,7 +206,13 @@ const ProfileScreen = ({ navigation }) => {
           styles.logoutButton,
           { backgroundColor: theme.colors.errorLight },
         ]}
-        onPress={() => {/* Add logout functionality */}}
+        onPress={async () => {
+          try {
+            await logout();
+          } catch (error) {
+            console.error('Logout error:', error);
+          }
+        }}
       >
         <Ionicons name="log-out-outline" size={20} color={theme.colors.error} />
         <Text style={[styles.logoutText, { color: theme.colors.error }]}>

@@ -1,9 +1,15 @@
 // Import environment variables
 import { getEnv } from '../utils/env';
 
-// API Configuration - Use local development server with actual IP
-export const API_URL = getEnv('API_URL', 'http://192.168.100.22:3001/api');
-export const SOCKET_URL = getEnv('SOCKET_URL', 'http://192.168.100.22:3001');
+// API Configuration
+// Options:
+// 1) If using ADB reverse (recommended):
+//    Run: adb reverse tcp:3001 tcp:3001, then use http://localhost:3001 from the device
+// 2) If on same Wi‑Fi without ADB reverse:
+//    Use your computer's LAN IP (e.g., http://192.168.x.x:3001)
+// You can override via environment variables API_URL and SOCKET_URL
+export const API_URL = getEnv('API_URL', 'http://localhost:3001/api');
+export const SOCKET_URL = getEnv('SOCKET_URL', 'http://localhost:3001');
 
 // Gemini API Configuration
 export const GEMINI_API_KEY = getEnv('GEMINI_API_KEY', '');
@@ -22,6 +28,7 @@ export const STORAGE_KEYS = {
   THEME: '@theme',
   ONBOARDING_COMPLETED: '@onboarding_completed',
   LAST_SYNC: '@last_sync',
+  APP_SETTINGS: '@app_settings',
 };
 
 // App Limits

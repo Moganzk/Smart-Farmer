@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -35,6 +34,7 @@ import AboutScreen from '../screens/settings/AboutScreen';
 import PrivacyScreen from '../screens/settings/PrivacyScreen';
 import TermsScreen from '../screens/settings/TermsScreen';
 import NotificationsScreen from '../screens/notifications/NotificationsScreen';
+import DrawerContent from '../components/navigation/DrawerContent';
 
 // Create navigators
 const Stack = createNativeStackNavigator();
@@ -248,6 +248,7 @@ const AppNavigator = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(null);
   const [isCheckingOnboarding, setIsCheckingOnboarding] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   // Check if user has completed onboarding
   useEffect(() => {
@@ -263,6 +264,7 @@ const AppNavigator = () => {
         setHasCompletedOnboarding(false);
       } finally {
         setIsCheckingOnboarding(false);
+        setIsInitialLoad(false); // Mark initial load as complete
       }
     };
     
@@ -285,38 +287,31 @@ const AppNavigator = () => {
     return () => clearInterval(interval);
   }, [hasCompletedOnboarding]);
   
-  // Show splash screen while loading
-  console.log('🔍 AppNavigator: isLoading =', isLoading, 'isCheckingOnboarding =', isCheckingOnboarding, 'hasCompletedOnboarding =', hasCompletedOnboarding, 'isAuthenticated =', isAuthenticated);
+  // Show splash screen only during initial load
+  console.log('🔍 AppNavigator: isLoading =', isLoading, 'isCheckingOnboarding =', isCheckingOnboarding, 'hasCompletedOnboarding =', hasCompletedOnboarding, 'isAuthenticated =', isAuthenticated, 'isInitialLoad =', isInitialLoad);
   
-  if (isLoading || isCheckingOnboarding || hasCompletedOnboarding === null) {
+  // Only show splash during initial app load, not during login/register operations
+  if (isInitialLoad && (isLoading || isCheckingOnboarding || hasCompletedOnboarding === null)) {
     console.log('🔍 AppNavigator: Showing splash screen');
     return <SplashScreen />;
   }
   
   return (
-    <NavigationContainer theme={theme.navigation}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!hasCompletedOnboarding ? (
-          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        ) : !isAuthenticated ? (
-          <Stack.Screen name="Auth" component={AuthNavigator} />
-        ) : (
-          <>
-            <Stack.Screen name="Main" component={MainDrawerNavigator} />
-            <Stack.Screen name="ProfileEdit" component={ProfileEditScreen} />
-            <Stack.Screen name="Privacy" component={PrivacyScreen} />
-            <Stack.Screen name="Terms" component={TermsScreen} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!hasCompletedOnboarding ? (
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+      ) : !isAuthenticated ? (
+        <Stack.Screen name="Auth" component={AuthNavigator} />
+      ) : (
+        <>
+          <Stack.Screen name="Main" component={MainDrawerNavigator} />
+          <Stack.Screen name="ProfileEdit" component={ProfileEditScreen} />
+          <Stack.Screen name="Privacy" component={PrivacyScreen} />
+          <Stack.Screen name="Terms" component={TermsScreen} />
+        </>
+      )}
+    </Stack.Navigator>
   );
-};
-
-// Custom Drawer Content
-const DrawerContent = (props) => {
-  // This will be implemented later
-  return null;
 };
 
 export default AppNavigator;

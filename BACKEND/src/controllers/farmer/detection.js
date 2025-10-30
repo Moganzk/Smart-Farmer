@@ -5,7 +5,7 @@ const responses = require('../../utils/responses');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 const geminiService = require('../../services/ai/gemini');
 const groqService = require('../../services/ai/groq');
 
@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const userId = req.user.user_id;
     const fileExt = path.extname(file.originalname);
-    const fileName = `crop_${userId}_${uuidv4()}${fileExt}`;
+  const fileName = `crop_${userId}_${randomUUID()}${fileExt}`;
     cb(null, fileName);
   }
 });
